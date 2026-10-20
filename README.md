@@ -15,6 +15,8 @@ You can use the example provided to learn the process. Before beginning the foll
 
 ### Step 1: Create new React app with Vite
 
+Use Node.js 20.19 or newer in the 20.x line, or Node.js 22.12 or newer, as required by the current Vite scaffolder.
+
 ```bash
 npm create vite@latest my-app
 ✔ Select a framework: › React
@@ -32,7 +34,21 @@ npm install -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss@3 init -p
 ```
 
-For the current shadcn/ui Vite setup, see [the Vite installation guide](https://ui.shadcn.com/docs/installation/vite).
+Before running shadcn, configure Tailwind CSS 3 as described in [the Tailwind CSS 3 Vite guide](https://v3.tailwindcss.com/docs/guides/vite). In the generated `tailwind.config.js`, set `content` to:
+
+```javascript
+content: ['./index.html', './src/**/*.{js,jsx}'],
+```
+
+Replace `src/index.css` with the Tailwind directives:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+The current [shadcn/ui Vite installation guide](https://ui.shadcn.com/docs/installation/vite) uses Tailwind CSS 4; do not substitute its Tailwind setup for the version 3 steps above.
 
 Update `vite.config.js`:
 
@@ -65,9 +81,14 @@ Create `jsconfig.json`:
 }
 ```
 
+Install the [Tailwind CSS 3-compatible version of tailwind-merge](https://github.com/dcastil/tailwind-merge/tree/v2.6.0) before shadcn installs its utilities. Initialize the existing app with the legacy style index and Radix base, rather than selecting a new Tailwind CSS 4 preset:
+
 ```bash
-npx shadcn@latest init
+npm install tailwind-merge@2.6.0
+npx shadcn@latest init index --base radix
 ```
+
+After initialization, replace `src/index.css` with the contents of the [included example's Tailwind CSS 3 stylesheet](https://github.com/Bklieger/Claude-React-Jumpstart/blob/ec7a179082892b92e97458fd9ba17fe3cb2f3323/my-app/src/index.css). Its HSL theme values match the generated Tailwind CSS 3 configuration. The current CLI can emit full OKLCH color values, which do not work inside that configuration's `hsl(var(...))` colors.
 
 The CLI package is `shadcn` (without `-ui`). To generate JavaScript components, set `"tsx": false` in the generated `components.json` before adding them. See [shadcn/ui's JavaScript guide](https://ui.shadcn.com/docs/javascript).
 
